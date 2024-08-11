@@ -2,56 +2,78 @@ package main
 
 import "fmt"
 
-
-
-type Node struct{
+type Node struct {
 	Value int
-	Left *Node
+	Left  *Node
 	Right *Node
 }
 
-
-
-func (n *Node)Insert(value int)  {
+func (n *Node) Insert(value int) {
 	newnode := &Node{Value: value}
 
-	if value < n.Value{
-		if n.Left == nil{
-		n.Left = newnode
+	if n == nil{
+		n = newnode
+	}
+
+	queue := []*Node{n}
+
+	for len(queue) > 0{
+		current := queue[0]
+		queue = queue[1:]
+
+		if current.Left == nil{
+			current.Left = newnode
+			break
 		}else{
-			n.Left.Insert(value)
+			queue = append(queue, current.Left)
 		}
-	}else{
-		if n.Right == nil{
-			n.Right = newnode
-			}else{
-				n.Right.Insert(value)
+
+		if current.Right == nil{
+			current.Right = newnode
+			break
+		}else{
+			queue = append(queue, current.Right)
 		}
 	}
+
 }
 
+func (n *Node) Inorder() {
+	if n == nil {
+		return
+	}
 
-func (n *Node)Height() int  {
-	if n == nil{
+	n.Left.Inorder()
+	fmt.Print("->", n.Value)
+	n.Right.Inorder()
+}
+
+func (n *Node) Height() int {
+	if n == nil {
 		return -1
 	}
 
-	LeftHeight := n.Left.Height()
-	RightHeight := n.Right.Height()
+	leftHeight := n.Left.Height() 
+	rightHeight := n.Right.Height() 
 
-	return max(LeftHeight,RightHeight)+1
+	return max(leftHeight, rightHeight) + 1
+
 }
 
-func main()  {
-	root := &Node{Value: 100}
+func main() {
+	n := &Node{Value: 100}
 
-	root.Insert(90)
-	root.Insert(80)
-	root.Insert(70)
-	root.Insert(60)
-	root.Insert(50)
-	root.Insert(40)
-	root.Insert(30)
+	n.Insert(90)
+	n.Insert(85)
+	n.Insert(70)
+	n.Insert(110)
+	n.Insert(80)
+	n.Insert(40)
+	n.Insert(220)
+	n.Insert(50)
+	n.Insert(20)
 
-	fmt.Println("Height of the tree is: ",root.Height())
+	n.Inorder()
+	fmt.Println()
+	fmt.Println("Height of the node : ",n.Height())
 }

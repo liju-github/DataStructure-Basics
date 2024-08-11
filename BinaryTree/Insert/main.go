@@ -13,20 +13,31 @@ type Node struct{
 func (n *Node)Insert(value int)  {
 	newnode:= &Node{Value: value}
 
-	if value > n.Value{
-		if n.Left == nil{
-           n.Left = newnode
-		}else{
-			n.Left.Insert(value)
-		}
-	}else{
-		if n.Right == nil{
-			n.Right = newnode
-		 }else{
-			 n.Right.Insert(value)
-		 }
+	if n == nil{
+		n = newnode
 	}
 
+	queue := []*Node{n} 
+
+	for len(queue)>0{
+        current := queue[0]
+		queue = queue[1:]
+		
+		if current.Left == nil{
+			current.Left = newnode
+			break
+		}else{
+			queue = append(queue, current.Left)
+		}
+
+		if current.Right == nil{
+           current.Right = newnode
+		   break
+		}else{
+			queue = append(queue, current.Right)
+		}
+
+	}
 	
 }
 
@@ -35,7 +46,6 @@ func (n *Node)InorderTraversal()  {
 	if n == nil{
 		return
 	}
-
 	n.Left.InorderTraversal()
 	fmt.Println("--> ",n.Value)
 	n.Right.InorderTraversal()
