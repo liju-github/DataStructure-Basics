@@ -1,51 +1,104 @@
 package main
 
-type Node struct{
+import "fmt"
+
+type Node struct {
 	Value int
-	Left *Node
+	Left  *Node
 	Right *Node
 }
 
-func (n *Node) Delete(value int) *Node {
+func (n *Node) Delete(value int) {
 	if n == nil {
-		return nil
+		return
+	}
+	queue := []*Node{n}
+	var targetNode, deepestNode *Node
+	var parentOfDeepest *Node
+
+	for len(queue) > 0 {
+		current := queue[0]
+		queue = queue[1:]
+
+		if current.Value == value {
+			targetNode = current
+		}
+		if current.Left != nil {
+			parentOfDeepest = current
+			queue = append(queue, current.Left)
+		}
+		if current.Right != nil {
+			parentOfDeepest = current
+			queue = append(queue, current.Right)
+		}
+		deepestNode = current
 	}
 
-	// Traverse to find the node to delete
-	if value < n.Value {
-		n.Left = n.Left.Delete(value)
-	} else if value > n.Value {
-		n.Right = n.Right.Delete(value)
-	} else {
-		// Node found, handle the three cases
-
-		// Case 1: No children (leaf node)
-		if n.Left == nil && n.Right == nil {
-			return nil
+	if targetNode != nil {
+		targetNode.Value = deepestNode.Value
+		if parentOfDeepest.Right == deepestNode {
+			parentOfDeepest.Right = nil
+		} else {
+			parentOfDeepest.Left = nil
 		}
-
-		// Case 2: One child
-		if n.Left == nil {
-			return n.Right
-		} else if n.Right == nil {
-			return n.Left
-		}
-
-		// Case 3: Two children
-		// Find the in-order successor (smallest in the right subtree)
-		smallestRight := n.Right.findMin()
-		n.Value = smallestRight.Value
-		n.Right = n.Right.Delete(smallestRight.Value)
 	}
-
-	return n
 }
 
-// Helper function to find the minimum value node in a subtree
-func (n *Node) findMin() *Node {
-	current := n
-	for current.Left != nil {
-		current = current.Left
+func (n *Node) Insert(value int) {
+
+	newnode := &Node{Value: value}
+	if n == nil {
+		n = newnode
 	}
-	return current
+
+	queue := []*Node{n}
+
+	for len(queue) > 0 {
+		current := queue[0]
+		queue = queue[1:]
+
+		if current.Left == nil {
+			current.Left = newnode
+			break
+		} else {
+			queue = append(queue, current.Left)
+		}
+
+		if current.Right == nil {
+			current.Right = newnode
+			break
+		} else {
+			queue = append(queue, current.Right)
+		}
+	}
+}
+
+func (n *Node) Inorder() {
+	if n == nil {
+		return
+	}
+
+	n.Left.Inorder()
+	fmt.Print("->", n.Value)
+	n.Right.Inorder()
+}
+
+func main() {
+	n := &Node{Value: 100}
+
+	n.Insert(10)
+	n.Insert(30)
+	n.Insert(22)
+	n.Insert(11)
+	n.Insert(55)
+	n.Insert(77)
+
+	n.Inorder()
+	fmt.Println()
+
+	n.Delete(11)
+
+	n.Inorder()
+	fmt.Println()
+
 }

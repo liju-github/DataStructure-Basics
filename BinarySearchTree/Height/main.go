@@ -8,20 +8,15 @@ type Node struct{
 	Right *Node
 }
 
-
 func (n *Node)Insert(value int)  {
 	newnode := &Node{Value: value}
 
-	if n == nil{
-		return
-	}
-
-	if n.Value < value{
+	if value < n.Value{
 		if n.Left == nil{
 			n.Left = newnode
 		}else{
 			n.Left.Insert(value)
-		}	
+		}
 	}else{
 		if n.Right == nil{
 			n.Right = newnode
@@ -31,10 +26,11 @@ func (n *Node)Insert(value int)  {
 	}
 }
 
+
 func (n *Node)Inorder()  {
-	
-	if n == nil{
+	if n ==nil{
 		return
+
 	}
 
 	n.Left.Inorder()
@@ -42,17 +38,30 @@ func (n *Node)Inorder()  {
 	n.Right.Inorder()
 }
 
-func main()  {
-	root := &Node{Value: 100}
+func (n *Node)Height() int {
+	if n == nil{
+        return -1
+	}
 
-	root.Insert(90)
-	root.Insert(80)
-	root.Insert(70)
-	root.Insert(60)
-	root.Insert(50)
-	root.Insert(40)
-	root.Insert(30)
+	leftHeight := n.Left.Height()
+	rightHeight := n.Right.Height()
 
-	root.Inorder()
+	return max(leftHeight,rightHeight)+1
+}
+
+func main() {
+	n := &Node{Value: 100}
+
+	n.Insert(10)
+	n.Insert(30)
+	n.Insert(22)
+	n.Insert(11)
+	n.Insert(55)
+	n.Insert(77)
+
+	n.Inorder()
 	fmt.Println()
+
+	fmt.Println("Height is ",n.Height())
+
 }
