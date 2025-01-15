@@ -1,86 +1,96 @@
 package main
 
-import "fmt"
+import (
+	"fmt"
+	"os"
+	"runtime/pprof"
+)
 
-type Node struct{
+type Node struct {
 	Value int
-	Left *Node
+	Left  *Node
 	Right *Node
 }
 
+func (n *Node) Insert(value int) {
+	newNode := &Node{Value: value}
 
-func (n *Node)Insert(value int)  {
-	newnode := &Node{Value: value}
-
-
-	if value < n.Value{
-		if n.Left == nil{
-			n.Left = newnode
-		}else{
+	if value < n.Value {
+		if n.Left == nil {
+			n.Left = newNode
+		} else {
 			n.Left.Insert(value)
 		}
-	}else{
-		if n.Right == nil{
-			n.Right = newnode
-		}else{
+	} else {
+		if n.Right == nil {
+			n.Right = newNode
+		} else {
 			n.Right.Insert(value)
 		}
 	}
 }
 
-func (n *Node)Inorder()  {
-	if n == nil{
+func (n *Node) Inorder() {
+	if n == nil {
 		return
 	}
 
 	n.Left.Inorder()
-	fmt.Print("->",n.Value)
+	fmt.Print("->", n.Value)
 	n.Right.Inorder()
 }
-func (n *Node)Preorder()  {
-	if n == nil{
+
+func (n *Node) Preorder() {
+	if n == nil {
 		return
 	}
 
-	fmt.Print("->",n.Value)
-	n.Left.Inorder()
-	n.Right.Inorder()
+	fmt.Print("->", n.Value)
+	n.Left.Preorder()
+	n.Right.Preorder()
 }
 
-func (n *Node)Postorder()  {
-	if n == nil{
+func (n *Node) Postorder() {
+	if n == nil {
 		return
 	}
 
-	n.Left.Inorder()
-	n.Right.Inorder()
-	fmt.Print("->",n.Value)
+	n.Left.Postorder()
+	n.Right.Postorder()
+	fmt.Print("->", n.Value)
 }
 
-func (n *Node)Levelorder()  {
-	if  n == nil{
+func (n *Node) Levelorder() {
+	if n == nil {
 		return
 	}
 
 	queue := []*Node{n}
 
-	for len(queue) > 0{
+	for len(queue) > 0 {
 		current := queue[0]
 		queue = queue[1:]
 
-		fmt.Print("->",current.Value)
+		fmt.Print("->", current.Value)
 
-		if current.Left != nil{
-            queue = append(queue, current.Left)
+		if current.Left != nil {
+			queue = append(queue, current.Left)
 		}
 
-		if current.Right != nil{
-            queue = append(queue, current.Right)
+		if current.Right != nil {
+			queue = append(queue, current.Right)
 		}
 	}
 }
 
 func main() {
+
+	f, err := os.Create("memprofile.out")
+	if err != nil {
+		panic(err)
+	}
+	defer f.Close()
+	pprof.WriteHeapProfile(f)
 
 	n := &Node{Value: 50}
 	n.Insert(30)
