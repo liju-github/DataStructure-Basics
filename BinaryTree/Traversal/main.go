@@ -41,7 +41,7 @@ func (n *Node) Inorder() {
 
 	n.Left.Inorder()
 	fmt.Print("-> ",n.Value)
-    n.Right.Inorder()
+  n.Right.Inorder()
 }
 
 func (n *Node) PreOrder() {

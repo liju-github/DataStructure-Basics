@@ -25,14 +25,14 @@ func (n *Node)Insert(value int)  {
 		
 		if current.Left == nil{
 			current.Left = newnode
-			break
+			return
 		}else{
 			queue = append(queue, current.Left)
 		}
 
 		if current.Right == nil{
            current.Right = newnode
-		   break
+		   return
 		}else{
 			queue = append(queue, current.Right)
 		}
